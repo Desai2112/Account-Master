@@ -1,0 +1,86 @@
+
+#s_head{
+    text-align: center;
+    text-size-adjust:inherit;
+    display: flex;
+    margin-left: 50%;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    text-shadow: 2px 2px 5px rgba(30, 30, 30, 0.3);
+}
+
+.s_dol{
+    color:rgb(64, 129, 233);
+}
+
+.s_Acc{
+    color: rgb(92, 91, 100);
+}
+.s_Mas{
+    color:rgb(64, 129, 233);
+}
+
+#s_mid{
+    color:rgb(92, 91, 100);
+    text-shadow: 2px 2px 5px rgba(30, 30, 30, 0.3);
+    text-align: center;
+    margin-left: 19%;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.cun{
+    text-align: center;
+    display: flex;
+    margin-left: 30%;
+}
+
+.s_pass{
+    margin-left: 31%;
+    display: flex;
+}
+
+.email{
+    text-align: center;
+    display: flex;
+    margin-left: 33.3%;
+}
+.su{
+input[type="text"],
+input[type="password"] {
+    margin-top:0.5%;
+    margin-left:1%;
+    width: 269px;
+    height: 32px; 
+    border-radius: 1cm;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0,0.5); 
+}
+}
+.signup,.login-button {
+    display: inline-block;
+    padding: 9px 20px;
+    background-color:rgb(255, 255, 255);
+    border-radius:1cm;
+    width: 175px;
+    height: 39px; 
+    color:rgb(64, 129, 233);
+    text-decoration:dotted;
+    border: none;
+    cursor: pointer;
+}
+
+.signup:hover,.login-button:hover{
+    background-color:rgb(64, 129, 233);
+    color: aliceblue;
+    box-shadow:1px 1px 1px black;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+/* input[type="text"],
+input[type="password"]:hover{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+} */
+
+ 
+.su{
+    padding-top: 13%;
+    margin-left: 11%;
+}

@@ -1,0 +1,78 @@
+.container div {
+    margin-bottom: 10px;
+    flex: 1 0 30%; 
+}
+
+.container label {
+    display: inline-block;
+    width: 30%;
+    margin-bottom: 5px;
+}
+
+.date{
+    display: flex;
+}
+.billno{
+    display: flex;
+}
+.sname{
+    display: flex;
+}
+.bname{
+    display: flex;
+}
+.gno{
+    display: flex;
+}
+.pname{
+    display: flex;
+}
+.amt{
+    display: flex;
+}
+.tamt{
+    display: flex;
+}
+.qnt{
+    display: flex;
+}
+.ppu{
+    display: flex;
+}
+.gst{
+    display: flex;
+}
+
+
+.container input[type="text"],
+.container input[type="number"],
+.container input[type="date"] {
+    width: calc(100% - 70px); 
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin-right: 10px; 
+}
+.container .submit,
+.container .reset {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.container .reset {
+    background-color: #f44336;
+    margin-left: 10px;
+}
+
+.flex{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.AWOT{
+    display: flex;
+}

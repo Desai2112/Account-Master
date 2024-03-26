@@ -1,0 +1,92 @@
+
+
+#title{
+    text-align: center;
+    text-size-adjust:inherit;
+    display: flex;
+    margin-left: 37.6%;
+}
+
+
+.dol{
+    color:rgb(64, 129, 233);
+}
+
+.Acc{
+    color: rgb(92, 91, 100);
+}
+.Mas{
+    color:rgb(64, 129, 233);
+    
+}
+
+#mid{
+    color:rgb(92, 91, 100);
+    text-shadow: 2px 2px 5px rgba(30, 30, 30, 0.3);
+    text-align: center;
+    margin-right: 30%;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    padding-top: 17%; 
+}
+
+.un{
+    text-align: center;
+    display: flex;
+    margin-left: 36%;
+}
+
+.pass{
+    margin-left: 36.3%;
+    display: flex;
+}
+
+#mid{
+input[type="text"],
+input[type="password"],
+input[type="date"] {
+    margin-top: 0.8%;
+    margin-left:1%;
+    width: 150px;
+    height: 30px; 
+    border-radius: 1cm;
+    font-size: medium;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0,0.5); 
+}
+}
+
+/* input[type="button"] {
+    width: 190px; 
+    height: 40px; 
+    background-color:rgb(64, 129, 233);
+    color: white; 
+    box-shadow:3px 3px 3px rgba(64, 129,233);
+    border-radius: 1cm;
+    cursor:pointer; 
+    font-size: 16px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+} */
+
+.signup-button {
+    display: inline-block;
+    padding: 9px 20px;
+    background-color:rgb(255, 255, 255);
+    border-radius:1cm;
+    width: 150px;
+    height: 39px; 
+    color:rgb(64, 129, 233);
+    text-decoration:dotted;
+    border: none;
+    cursor: pointer;
+    
+}
+
+.signup-button:hover{
+    background-color:rgb(64, 129, 233);
+    color: aliceblue;
+    box-shadow:1px 1px 1px black;
+}
+
+input[type="text"],
+input[type="password"]:hover{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
