@@ -41,7 +41,7 @@ const Purchase = () => {
       }));
     }
   }, [formValues.quantity, formValues.pricePerUnit, formValues.cgst, formValues.sgst, formValues.igst]);
-
+  const [purchases, setPurchases] = useState([]);
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormValues((prevValues) => ({
@@ -52,20 +52,17 @@ const Purchase = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    axios.post('http://localhost:8081/purchase', { formValues })
+    axios.post(`http://localhost:8081/purchase`, { formValues })
       .then(res => {
-        console.log(res);
-        if (res.data.success) {
-          console.log(res.data.message);
-          // navigate('/purchase');
-        } else {
-          alert("Failed to enter the data: " + res.data.message);
-        }
+        console.log('Purchase data fetched:', res.data);
+        setPurchases(res.result);
+        console.log(res.result);
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        console.log(err);
+        alert("Failed to enter the data: " + err.message);
+      });
   };
-
-  // console.log(formValues);
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -170,16 +167,22 @@ const Purchase = () => {
               </tr>
             </thead>
             <tbody>
-              {/* {analyticsData.map((row, index) => (
-                                        <tr key={index}>
-                                            <td>{index + 1}</td>
-                                            <td>{row.MonthYear}</td>
-                                            <td>{row.MonthlySell}</td>
-                                            <td>{row.MonthlyPurchase}</td>
-                                            <td>{row.Tax}</td>
-                                            <td>{row.NetProfit}</td>
-                                        </tr>
-                                    ))} */}
+
+              {Array.isArray(purchases) && purchases.map((purchase, index) => (
+                <tr key={index}>
+                  <td>{purchase.billNo}</td>
+                  <td>{purchase.sellerName}</td>
+                  <td>{purchase.gstNo}</td>
+                  <td>{purchase.productName}</td>
+                  <td>{purchase.quantity}</td>
+                  <td>{purchase.pricePerUnit}</td>
+                  <td>{purchase.cgst}</td>
+                  <td>{purchase.sgst}</td>
+                  <td>{purchase.igst}</td>
+                  <td>{purchase.totalAmount}</td>
+                </tr>
+              ))}
+
             </tbody>
           </table>
         </div>

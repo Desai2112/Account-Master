@@ -133,7 +133,35 @@ const Sell = () => {
             </div>
           </div>
         </form>
-      </Box>
+      
+        <br />
+        <br />
+        <h1>Previous Sell Records</h1>
+        <br />
+        <div className="table-responsive">
+          <table className="table table-bordered">
+            <thead>
+              <tr>
+                <th className="col">Bill No</th>
+                <th className="col">Seller Name</th>
+                <th className="col">GST No</th>
+                <th className="col">Product Name</th>
+                <th className="col">Quantity</th>
+                <th className="col">Price of Unit</th>
+                <th className="col">CGST</th>
+                <th className="col">SGST</th>
+                <th className="col">IGST</th>
+                <th className="col">Total Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                
+              }
+            </tbody>
+          </table>
+        </div>
+        </Box>
     </Box>
   );
 };
