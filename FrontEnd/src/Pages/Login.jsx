@@ -1,40 +1,42 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom'; // Import Link from react-router-dom
+import { useNavigate, Link } from 'react-router-dom'; 
 import '../Stylesheets/login.css';
 import img from "../Stylesheets/IMG_0423.JPG";
+import {AppContext} from '../App'
 
 const Login = () => {
+    const appContext = useContext(AppContext);
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [UId, setUId] = useState(null);
     const navigate = useNavigate();
 
-    function handleSubmit(event) {
-        event.preventDefault();
-        axios.post('http://localhost:8081/login', { username, password })
-            .then(res => {
-                console.log(res);
-                if (res.data.success) {
-                    console.log(res.data.message);
-                    setUId(res.data.UId);
-                    navigate('/Home');
-                } else {
-                    console.error(res.data.message);
-                    alert("Login failed: " + res.data.message);
-                }
-            })
-            .catch(err => {
-                console.log(err);
-                if (err.response && err.response.status === 401) {
-                    alert("Invalid Username or Password.");
-                } else {
-                    alert("Login failed: " + (err.response ? err.response.data.message : "Unknown error"));
-                }
-            });
 
-    }
+function handleSubmit(event) {
+    event.preventDefault();
+    axios.post('http://localhost:8081/login', { username, password })
+        .then(res => {
+            console.log(res);
+            if (res.data.success) { 
+                localStorage.setItem("token", res.data.token);
+                console.log(res.data.message);
+                navigate('/Home');
+            } else {
+                console.error(res.data.message);
+                alert("Login failed: " + res.data.message);
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            if (err.response && err.response.status === 401) {
+                alert("Invalid Username or Password.");
+            } else {
+                alert("Login failed: " + (err.response ? err.response.data.message : "Unknown error"));
+            }
+        });
+}
 
     return (
         <>

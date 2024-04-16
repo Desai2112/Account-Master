@@ -1,11 +1,40 @@
-// Import necessary elements
-import React, { useState, useEffect } from 'react';
-import { Box } from '@mui/material';
+import React, { useState, useEffect, useContext } from 'react';
+import { Box, CircularProgress, Alert } from '@mui/material';
 import Sidenav from '../Sidenav';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 import '../Stylesheets/purchase.css';
 
+
 const Sell = () => {
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("Token not found in localStorage");
+        return;
+      }
+      axios.get('http://localhost:8081/checkAuth', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      .then(res => {
+        const { userId } = res.data;
+        if (!userId) {
+          console.error("userId not found in response data");
+          return;
+        }
+        setUserId(userId);
+        console.log("User ID:", userId);
+      })
+      .catch(err => console.error("Error fetching userId:", err));
+    }
+    checkAuth();
+  }, []);
+
   const [formValues, setFormValues] = useState({
     date: '',
     billNo: '',
@@ -20,8 +49,33 @@ const Sell = () => {
     amountWithoutTax: '0',
     taxAmount: '0',
     totalAmount: '0',
+    UID:  userId ? userId : '',
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [loadingsells, setLoadingsells] = useState(false);
+  const [sells, setSells] = useState([]);
+  const fetchsells = async () => {
+    setLoadingsells(true);
+    try {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+      const response = await axios.get('http://localhost:8081/sell-data', config);      setSells(response.data);
+      console.log(sells)
+      setSells(response.data)
+      setLoadingsells(false);
+    } catch (err) {
+      console.error('Failed to fetch sells:', err);
+      setError('Failed to fetch sell data. Please try again later.');
+      setLoadingsells(false);
+    }
+  };
   useEffect(() => {
+    fetchsells();
     if (formValues.quantity && formValues.pricePerUnit && (formValues.cgst || formValues.sgst || formValues.igst)) {
       const quantity = parseFloat(formValues.quantity);
       const pricePerUnit = parseFloat(formValues.pricePerUnit);
@@ -50,8 +104,50 @@ const Sell = () => {
     }));
   };
   const handleSubmit = (event) => {
+    console.log(formValues)
     event.preventDefault();
-  }
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("Token not found in localStorage");
+      // Handle token not found error (e.g., redirect to login page)
+      return;
+    }
+  
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+    axios.post(`http://localhost:8081/sell`, formValues,config)
+      .then(res => {
+        console.log('Sell data submitted successfully:', res.data);
+        setSells(res.data);
+        console.log(res.data)
+        fetchsells();
+        handleReset();
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Failed to submit the data: " + err.message);
+      });
+  };
+  const handleReset = () => {
+    setFormValues({
+      date: '',
+      billNo: '',
+      buyerName: '',
+      gstNo: '',
+      productName: '',
+      quantity: '',
+      pricePerUnit: '',
+      cgst: '',
+      sgst: '',
+      igst: '',
+      amountWithoutTax: '0',
+      taxAmount: '0',
+      totalAmount: '0',
+    });
+  };
   return (
     <Box sx={{ display: 'flex' }}>
       <Sidenav />
@@ -68,17 +164,17 @@ const Sell = () => {
               <input type="text" name="billNo" value={formValues.billNo} onChange={handleChange} placeholder='Enter Bill No.' required />
             </div>
             <div className="bname">
-                <label>Buyer Name:</label>
-                <input type="text" name="sellerName" placeholder="Enter Buyer Name" value={formValues.buyerName} onChange={handleChange} required />
+              <label>Buyer Name:</label>
+              <input type="text" name="buyerName" placeholder="Enter Buyer Name" value={formValues.buyerName} onChange={handleChange} required />
             </div>
             <div className="gno">
-                <label>GST No.:</label>
-                <input type="text" name="gstNo" placeholder="Enter GST No." value={formValues.gstNo} onChange={handleChange} required />
+              <label>GST No.:</label>
+              <input type="text" name="gstNo" placeholder="Enter GST No." value={formValues.gstNo} onChange={handleChange} required />
             </div>
             <div className="pname">
-                <label>Product Name:</label>
-                <input type="text" name="productName" placeholder="Enter Product Name" value={formValues.productName} onChange={handleChange}
-                    required />
+              <label>Product Name:</label>
+              <input type="text" name="productName" placeholder="Enter Product Name" value={formValues.productName} onChange={handleChange}
+                required />
             </div>
             <div className="flex">
               <div className="qnt">
@@ -91,18 +187,18 @@ const Sell = () => {
               </div>
             </div>
             <div className="flex">
-            <div className="gst">
-              <label>CGST (%):</label>
-              <input type="number" name="cgst" value={formValues.cgst} onChange={handleChange} required />
-            </div>
-            <div className="gst">
-              <label>SGST (%):</label>
-              <input type="number" name="sgst" value={formValues.sgst} onChange={handleChange} required />
-            </div>
-            <div className="gst">
-              <label>IGST (%):</label>
-              <input type="number" name="igst" value={formValues.igst} onChange={handleChange}/>
-            </div>
+              <div className="gst">
+                <label>CGST (%):</label>
+                <input type="number" name="cgst" value={formValues.cgst} onChange={handleChange} required />
+              </div>
+              <div className="gst">
+                <label>SGST (%):</label>
+                <input type="number" name="sgst" value={formValues.sgst} onChange={handleChange} required />
+              </div>
+              <div className="gst">
+                <label>IGST (%):</label>
+                <input type="number" name="igst" value={formValues.igst} onChange={handleChange} />
+              </div>
             </div>
             <div className="AWOT">
               <label>Amount without Tax:</label>
@@ -133,7 +229,7 @@ const Sell = () => {
             </div>
           </div>
         </form>
-      
+
         <br />
         <br />
         <h1>Previous Sell Records</h1>
@@ -155,13 +251,24 @@ const Sell = () => {
               </tr>
             </thead>
             <tbody>
-              {
-                
-              }
+              {Array.isArray(sells) && sells.map((sell, index) => (
+                <tr key={index}>
+                  <td>{sell.BillNo}</td>
+                  <td>{sell.CustomerName}</td>
+                  <td>{sell.GSTNO}</td>
+                  <td>{sell.ProductName}</td>
+                  <td>{sell.Quantity}</td>
+                  <td>{sell.PricePerUnit}</td>
+                  <td>{sell.CGST}</td>
+                  <td>{sell.SGST}</td>
+                  <td>{sell.IGST}</td>
+                  <td>{sell.NetAmount}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
-        </Box>
+      </Box>
     </Box>
   );
 };

@@ -1,0 +1,113 @@
+.app{
+  background-image: url('./bg.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  padding: 20px;
+
+}
+
+.about-us {
+  text-align: center;
+  padding: 20px;
+}
+
+.team {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-right: 10%;
+  margin-left: 10%;
+  padding-top: 5%;
+}
+
+.team-member {
+  max-width: 200px;
+  text-align: center;
+}
+
+.team-member img {
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.team-member h2 {
+  font-size: 1.2em;
+  margin-bottom: 5px;
+}
+
+.team-member p {
+  font-size: 1em;
+}
+
+.team-info{
+  text-align: center;
+  justify-content: center;
+}
+
+h2{
+  text-align: center;
+}
+
+.meghimg , .omimg{
+  text-align: center;
+  justify-content: center;
+}
+
+.col-md-12{
+  text-align: center;
+  justify-content: center;
+}
+
+.section-subtitle{
+  margin-left: 30%;
+  margin-right: 30%;
+}
+
+.team-item{
+ 
+  justify-content: space-evenly;
+  background-color: white;
+  color: black;
+  border-radius: 0.3cm;
+  width: 400px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0,0.5); 
+  /* padding: 1%; */
+}
+
+.meghimg{
+  background-image: url('./mimg.jpg');
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  width: 180px;
+  height: 150px;
+  justify-content: center;
+  text-align: center;
+  padding-top:10%;
+  margin-left: 30%;
+}
+
+.omimg{
+  background-image: url('./oimg.jpg');
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  width: 180px;
+  height: 150px;
+  justify-content: center;
+  text-align: center;
+  padding-top:10%;
+  margin-left: 30%;
+  align-items: center;
+}
+
+a{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.team-icon{
+  padding: 0%;
+}

@@ -1,4 +1,5 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
 const mysql = require('mysql2');
 const cors = require('cors');
 
@@ -6,10 +7,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.listen(8081, () => {
-    console.log("Listening...");
-});
-
+// Establish a database connection
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -17,79 +15,139 @@ const db = mysql.createConnection({
     database: 'account_master'
 });
 
+// Start the Express server
+app.listen(8081, () => {
+    console.log("Listening on port 8081...");
+});
+
+// Login route
 app.post('/login', (req, res) => {
-    const sql = "SELECT UId, username FROM details WHERE username=? AND password=?";
+    const sql = "SELECT * FROM details WHERE username=? AND password=?";
     db.query(sql, [req.body.username, req.body.password], (err, data) => {
         if (err) {
             return res.status(500).json({ success: false, message: "Error" });
         }
         if (data.length > 0) {
-            return res.status(200).json({ success: true, message: "Login Successful", UId: data[0].UId });
+            const userId = data[0].UId;
+            const token = jwt.sign({ userId }, "jwtSecretKey", { expiresIn: '3h' });
+            return res.status(200).json({ success: true, message: "Login Successful", token });
         } else {
             return res.status(401).json({ success: false, message: "Invalid credentials" });
         }
     });
 });
 
-
-
+// Signup route
 app.post('/signup', (req, res) => {
-    const checkEmail = "SELECT * FROM details WHERE email = ?";
+    const checkEmail = "SELECT * FROM details WHERE email =?";
     db.query(checkEmail, [req.body.email], (error, results) => {
         if (error) {
-            console.error('Error executing query: ', error);
-            return res.status(500).send('Error checking email in database');
-        }
-        if (results.length > 0) {
-            return res.status(409).json({ success: false, message: "Email already exists" });
+            console.error("Error executing query: ", error);
+            res.status(500).send('Error checking email in database');
+        } else if (results.length > 0) {
+            res.status(409).json({ success: false, message: "Email already exists" });
         } else {
-            const signUp = "INSERT INTO details (username, email, password) VALUES (?, ?, ?)";
+            const signUp = "INSERT INTO details (username, email, password) VALUES (?,?,?)";
             db.query(signUp, [req.body.username, req.body.email, req.body.password], (err, data) => {
                 if (err) {
                     console.error('Error executing insert query: ', err);
-                    return res.status(500).send('Error inserting data into database');
+                    res.status(500).send('Error inserting data into database');
+                } else {
+                    console.log('User inserted successfully');
+                    res.status(200).json({ success: true, message: "Signup successful" });
                 }
-                console.log('Data inserted successfully');
-                res.status(200).json({ success: true, message: "Signup successful" });
             });
         }
     });
 });
 
-app.post('/purchase', (req, res) => {
-    const purchase = "INSERT INTO Purchase (BillNo, ProductName, SellerName, Quantity, PricePerUnit, AmountWithoutTax, GSTNO, CGST, SGST, IGST, NetAmount, TransactionDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+// Check Auth Middleware
+const verifyJWT = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
-    const { billNo, productName, sellerName, quantity, pricePerUnit, amountWithoutTax, gstNo, cgst, sgst, igst, totalAmount, date } = req.body.formValues;
+    if (!token) {
+        return res.status(401).json("We need a token; please provide it.");
+    } else {
+        jwt.verify(token, "jwtSecretKey", (err, decoded) => {
+            if (err) {
+                return res.status(403).json("Not authenticated.");
+            } else {
+                req.userId = decoded.userId;
+                next();
+            }
+        });
+    }
+};
+app.get('/checkAuth', verifyJWT, (req, res) => {
+    // If this middleware runs, it means the user is authenticated
+    return res.json({ authenticated: true, userId: req.userId });
+});
 
-    db.query(purchase, [billNo, productName, sellerName, quantity, pricePerUnit, amountWithoutTax, gstNo, cgst, sgst, igst, totalAmount, date], (err, data) => {
+// Purchase route
+app.post('/purchase', verifyJWT, (req, res) => {
+    const purchaseQuery = "INSERT INTO Purchase (UId, BillNo, ProductName, SellerName, Quantity, PricePerUnit, AmountWithoutTax, GSTNO, CGST, SGST, IGST, NetAmount, TransactionDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    db.query(purchaseQuery, [req.userId, req.body.billNo, req.body.productName, req.body.sellerName, req.body.quantity, req.body.pricePerUnit, req.body.amountWithoutTax, req.body.gstNo, req.body.cgst, req.body.sgst, req.body.igst, req.body.totalAmount, req.body.date], (err, result) => {
         if (err) {
             console.error('Error executing insert query: ', err);
             return res.status(500).send('Error inserting data into database');
         }
-        console.log('Data inserted successfully');
-        res.status(200).json({ success: true, message: "Purchase recorded successfully" });
+        console.log('Data inserted successfully', result);
+        res.status(200).json({ success: true, message: "Purchase recorded successfully", data: result });
     });
-
-    const showdata="Select * from purchase"
-
-    db.query(showdata , function(err, result){
-        if(err){
-            console.log("Error in fetching Purchase Data: ",err);
-            return res.status(500).send('Error fetching Purchase data from database of purchase');
-        }
-     });
 });
 
+// Route to fetch Purchase Data
+app.get('/purchase-data', verifyJWT, (req, res) => {
+    const query = 'SELECT * FROM Purchase where UId=?';
+    db.query(query, [req.userId], (err, result) => {
+        if (err) {
+            console.error('Error executing query: ', err);
+            res.status(500).send('Error fetching Purchase data from database');
+        } else {
+            console.log("Purchase data fetched Successfully for user ", req.userId);
+            res.status(200).json(result);
+        }
+    });
+});
 
-app.post('/analytics', (req, res) => {
-    const analytics = "SELECT * FROM monthlySummary";
-    db.query(analytics, (err, data) => {
+// Sell Route
+app.post('/sell', verifyJWT, (req, res) => {
+    const sellQuery = "INSERT INTO sell (UId, BillNo, ProductName, CustomerName, Quantity, PricePerUnit, AmountWithoutTax, GSTNO, CGST, SGST, IGST, NetAmount, TransactionDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    db.query(sellQuery, [req.userId, req.body.billNo, req.body.productName, req.body.buyerName, req.body.quantity, req.body.pricePerUnit, req.body.amountWithoutTax, req.body.gstNo, req.body.cgst, req.body.sgst, req.body.igst, req.body.totalAmount, req.body.date], (err, result) => {
+        if (err) {
+            console.error('Error executing insert query: ', err);
+            res.status(500).send('Error inserting data into database');
+        } else {
+            console.log('Data inserted successfully', result);
+            res.status(200).json({ success: true, message: "Sell recorded successfully", data: result });
+        }
+    });
+});
+
+// Route to fetch sell data
+app.get('/sell-data',verifyJWT, (req, res) => {
+    db.query('SELECT * FROM sell where UId=?',[req.userId], (err, result) => {
+        if (err) {
+            console.error('Error executing query: ', err);
+            res.status(500).send('Error fetching Sell data from database');
+        } else {
+            console.log("Sell data fetched Successfully.");
+            res.status(200).json(result);
+        }
+    });
+});
+
+// Analytics route
+app.post('/analytics', verifyJWT, (req, res) => {
+    const analytics = "SELECT * FROM monthlySummary where UId=?";
+    db.query(analytics, [req.userId],(err, data) => {
         if (err) {
             console.error('Error executing analytics query: ', err);
-            return res.status(500).send('Error fetching analytics data from database');
+            res.status(500).send('Error fetching analytics data from database');
+        } else {
+            console.log('Analytics data fetched successfully');
+            res.status(200).json(data);
         }
-        console.log('Analytics data fetched successfully');
-        res.status(200).json(data); // Send analytics data as JSON response
     });
 });
-

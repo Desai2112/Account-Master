@@ -59,4 +59,5 @@ SELECT
 FROM
     monthlysummary;
 
-select * from details;
+select * from sell where uid=3;
+truncate sell;

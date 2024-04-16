@@ -90,126 +90,124 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-export default function MiniDrawer() {
+export default function MiniDrawer({ UId }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
-  const nevigate=useNavigate();
+  const navigate = useNavigate();
 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
-          <IconButton onClick= {()=>setOpen(!open)}>
+          <IconButton onClick={() => setOpen(!open)}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </DrawerHeader>
         <Divider />
         <List>
-        <ListItem  disablePadding sx={{ display: 'block' }} onClick={()=>(nevigate('/home'))}>
-              <ListItemButton
+          <ListItem disablePadding onClick={() => navigate('/home', { state: { UId } })}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
                 sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
+                  minWidth: 0,
+                  mr: open ? 3 : 'auto',
+                  justifyContent: 'center',
                 }}
               >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <DashboardIcon /> 
-                  </ListItemIcon>                
-                  <ListItemText primary={'Home'}  sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-            <ListItem  disablePadding sx={{ display: 'block' }} onClick={()=>(nevigate('/Sell'))}>
-              <ListItemButton
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Home'} sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding onClick={() => navigate('/Sell', { state: { UId } })}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
                 sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
+                  minWidth: 0,
+                  mr: open ? 3 : 'auto',
+                  justifyContent: 'center',
                 }}
               >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <SellIcon /> 
-                  </ListItemIcon>                
-                  <ListItemText primary={'Sell'}  sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-            <ListItem  disablePadding sx={{ display: 'block' }} onClick={()=>(nevigate('/Purchase'))}>
-              <ListItemButton
+                <SellIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Sell'} sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding onClick={() => navigate('/Purchase', { state: { UId } })}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
                 sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
+                  minWidth: 0,
+                  mr: open ? 3 : 'auto',
+                  justifyContent: 'center',
                 }}
               >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <StoreIcon /> 
-                  </ListItemIcon>                
-                  <ListItemText primary={'Purchase'}  sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-            <ListItem  disablePadding sx={{ display: 'block' }} onClick={()=>(nevigate('/Analytics'))}>
-              <ListItemButton
+                <StoreIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Purchase'} sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding onClick={() => navigate('/Analytics', { state: { UId } })}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
                 sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
+                  minWidth: 0,
+                  mr: open ? 3 : 'auto',
+                  justifyContent: 'center',
                 }}
               >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <AnalyticsOutlinedIcon /> 
-                  </ListItemIcon>                
-                  <ListItemText primary={'Analytics'}  sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-            <ListItem  disablePadding sx={{ display: 'block' }} onClick={()=>(nevigate('/Aboutus'))}>
-              <ListItemButton
+                <AnalyticsOutlinedIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Analytics'} sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding onClick={() => navigate('/Aboutus', { state: { UId } })}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
                 sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
+                  minWidth: 0,
+                  mr: open ? 3 : 'auto',
+                  justifyContent: 'center',
                 }}
               >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <ContactPageIcon /> 
-                  </ListItemIcon>                
-                  <ListItemText primary={'About Us'}  sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
+                <ContactPageIcon />
+              </ListItemIcon>
+              <ListItemText primary={'About Us'} sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
         </List>
-        
       </Drawer>
-      
     </Box>
   );
 }

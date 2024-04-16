@@ -1,13 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import { Box } from '@mui/material';
+import { Box, CircularProgress, Alert } from '@mui/material';
 import Sidenav from '../Sidenav';
 import axios from 'axios';
 import '../Stylesheets/purchase.css';
 
 const Purchase = () => {
+
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("Token not found in localStorage");
+        return;
+      }
+      axios.get('http://localhost:8081/checkAuth', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      .then(res => {
+        const { userId } = res.data;
+        if (!userId) {
+          console.error("userId not found in response data");
+          return;
+        }
+        setUserId(userId);
+        console.log("User ID:", userId);
+      })
+      .catch(err => console.error("Error fetching userId:", err));
+    }
+    checkAuth();
+  }, []);
+
   const [formValues, setFormValues] = useState({
     date: '',
-    billNo: '', // Added billNo here
+    billNo: '',
     sellerName: '',
     gstNo: '',
     productName: '',
@@ -19,9 +48,36 @@ const Purchase = () => {
     amountWithoutTax: '0',
     taxAmount: '0',
     totalAmount: '0',
+    UID:  userId ? userId : '',
   });
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [loadingPurchases, setLoadingPurchases] = useState(false);
+  const [purchases, setPurchases] = useState([]);
+
+  const fetchPurchases = async () => {
+    setLoadingPurchases(true);
+    try {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+      const response = await axios.get('http://localhost:8081/purchase-data', config);
+      setPurchases(response.data);
+      setLoadingPurchases(false);
+    } catch (err) {
+      console.error('Failed to fetch purchases:', err);
+      setError('Failed to fetch purchase data. Please try again later.');
+      setLoadingPurchases(false);
+    }
+  };
+  
+
   useEffect(() => {
+    fetchPurchases();
     if (formValues.quantity && formValues.pricePerUnit && (formValues.cgst || formValues.sgst || formValues.igst)) {
       const quantity = parseFloat(formValues.quantity);
       const pricePerUnit = parseFloat(formValues.pricePerUnit);
@@ -41,7 +97,7 @@ const Purchase = () => {
       }));
     }
   }, [formValues.quantity, formValues.pricePerUnit, formValues.cgst, formValues.sgst, formValues.igst]);
-  const [purchases, setPurchases] = useState([]);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormValues((prevValues) => ({
@@ -51,17 +107,50 @@ const Purchase = () => {
   };
 
   const handleSubmit = (event) => {
+    console.log(formValues);
     event.preventDefault();
-    axios.post(`http://localhost:8081/purchase`, { formValues })
+  
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("Token not found in localStorage");
+      // Handle token not found error (e.g., redirect to login page)
+      return;
+    }
+  
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+  
+    axios.post(`http://localhost:8081/purchase`, formValues, config)
       .then(res => {
-        console.log('Purchase data fetched:', res.data);
-        setPurchases(res.result);
-        console.log(res.result);
+        console.log('Purchase data submitted successfully:', res.data);
+        setPurchases(res.data);
+        fetchPurchases();
+        handleReset();
       })
       .catch(err => {
-        console.log(err);
-        alert("Failed to enter the data: " + err.message);
+        console.error(err);
+        alert("Failed to submit the data: " + err.message);
       });
+  };
+  const handleReset = () => {
+    setFormValues({
+      date: '',
+      billNo: '',
+      sellerName: '',
+      gstNo: '',
+      productName: '',
+      quantity: '',
+      pricePerUnit: '',
+      cgst: '',
+      sgst: '',
+      igst: '',
+      amountWithoutTax: '0',
+      taxAmount: '0',
+      totalAmount: '0',
+    });
   };
 
   return (
@@ -129,19 +218,10 @@ const Purchase = () => {
               <input type="number" name="totalAmount" value={formValues.totalAmount} readOnly />
             </div>
             <div>
-              <button type="submit" className="submit">Submit</button>
-              <button type="reset" className="reset" onClick={() => setFormValues({
-                date: '',
-                sellerName: '',
-                gstNo: '',
-                productName: '',
-                quantity: '',
-                pricePerUnit: '',
-                gst: '',
-                amountWithoutTax: '0',
-                taxAmount: '0',
-                totalAmount: '0',
-              })}>Reset</button>
+              <button type="submit" className="submit" disabled={loading}>
+                {loading ? <CircularProgress size={10} /> : 'Submit'}
+              </button>
+              <button type="button" className="reset" onClick={handleReset}>Reset</button>
             </div>
           </div>
         </form>
@@ -170,16 +250,16 @@ const Purchase = () => {
 
               {Array.isArray(purchases) && purchases.map((purchase, index) => (
                 <tr key={index}>
-                  <td>{purchase.billNo}</td>
-                  <td>{purchase.sellerName}</td>
-                  <td>{purchase.gstNo}</td>
-                  <td>{purchase.productName}</td>
-                  <td>{purchase.quantity}</td>
-                  <td>{purchase.pricePerUnit}</td>
-                  <td>{purchase.cgst}</td>
-                  <td>{purchase.sgst}</td>
-                  <td>{purchase.igst}</td>
-                  <td>{purchase.totalAmount}</td>
+                  <td>{purchase.BillNo}</td>
+                  <td>{purchase.SellerName}</td>
+                  <td>{purchase.GSTNO}</td>
+                  <td>{purchase.ProductName}</td>
+                  <td>{purchase.Quantity}</td>
+                  <td>{purchase.PricePerUnit}</td>
+                  <td>{purchase.CGST}</td>
+                  <td>{purchase.SGST}</td>
+                  <td>{purchase.IGST}</td>
+                  <td>{purchase.NetAmount}</td>
                 </tr>
               ))}
 
