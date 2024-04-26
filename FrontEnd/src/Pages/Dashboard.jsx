@@ -1,28 +1,26 @@
-// Dashboard.jsx
 import React, { useState, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
 import Sidenav from '../Sidenav';
 import axios from 'axios';
-import Datacard from '../Components/Datacard'
+import Datacard from '../Components/Datacard';
 import Graph from '../Components/Graph';
+import '../Stylesheets/dashboard.css'; 
 
 const dataCards = [
-{ title: 'Sales Revenue', value: '$10,000' },
-{ title: 'Total Orders', value: '100' },
-{ title: 'Average Order Value', value: '$100' },
-{ title: 'New Customers', value: '50' },
-{ title: 'Total Inventory Value', value: '$20,000' },
-{ title: 'Out-of-stock Products', value: '10' }
+  { title: 'This month Sale', value: '100000 ₹' },
+  { title: 'This Month Purchase', value: '85000 ₹' },
+  { title: 'This month Profit', value: '15000 ₹' },
+  { title: 'Previous month Sale', value: '97000 ₹' },
+  { title: 'Previous Month Purchase', value: '86000 ₹' },
+  { title: 'Previous Month Profit', value: '11000 ₹' },
 ];
 
-// Mock data for graph
 const graphData = [
-  { name: 'Jan', value: 1000 },
-  { name: 'Feb', value: 1500 },
-  { name: 'Mar', value: 2000 },
-  { name: 'Apr', value: 2500 },
-  { name: 'May', value: 3000 },
-  { name: 'Jun', value: 3500 }
+  { month: 'Jan', sales: 10000, purchases: 8000, profit: 2000 },
+  { month: 'Feb', sales: 12000, purchases: 9000, profit: 3000 },
+  { month: 'Mar', sales: 15000, purchases: 10000, profit: 5000 },
+  { month: 'April', sales: 8000, purchases: 7000, profit: 1000 },
+  // Add more months as needed
 ];
 
 const Dashboard = () => {
@@ -50,26 +48,23 @@ const Dashboard = () => {
         console.log("User ID:", userId);
       })
       .catch(err => console.error("Error fetching userId:", err));
-    }
+    };
     checkAuth();
   }, []);
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box className="main-container">
       <Sidenav />
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <h2>Dashboard</h2>
-
-    <div>
-      <div>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-      {dataCards.map((card, index) => (
-        <Datacard key={index} title={card.title} value={card.value} />
-      ))}
-    </Box>
-        <Graph data={graphData} />
-      </div>
-    </div>
+      <Box className="main-content">
+        <Typography variant="h4" className="dashboard-title">Dashboard</Typography>
+        <div className="datacard-container">
+          {dataCards.map((card, index) => (
+            <Datacard key={index} title={card.title} value={card.value} />
+          ))}
+        </div>
+        <div className="graph-container">
+          <Graph data={graphData} />
+        </div>
       </Box>
     </Box>
   );

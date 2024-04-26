@@ -1,3 +1,14 @@
+.purchase-main{
+    background-color: antiquewhite;
+}
+.purchaseform {
+    border: 0cm;
+    box-shadow: 3px 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow effect */
+    background-color: azure;
+    padding: 20px;
+    border-radius: 8px;
+}
+
 .container div {
     margin-bottom: 10px;
     flex: 1 0 30%; 

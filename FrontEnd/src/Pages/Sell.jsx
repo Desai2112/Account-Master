@@ -3,7 +3,8 @@ import { Box, CircularProgress, Alert } from '@mui/material';
 import Sidenav from '../Sidenav';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
-import '../Stylesheets/purchase.css';
+// import '../Stylesheets/purchase.css';
+import '../Stylesheets/Sell.css';
 
 
 const Sell = () => {
@@ -64,8 +65,10 @@ const Sell = () => {
           Authorization: `Bearer ${token}`
         }
       };
-      const response = await axios.get('http://localhost:8081/sell-data', config);      setSells(response.data);
-      console.log(sells)
+      const response = await axios.get('http://localhost:8081/sell-data', config); 
+           
+      setSells(response.data);
+      console.log(sells);
       setSells(response.data)
       setLoadingsells(false);
     } catch (err) {
@@ -151,9 +154,11 @@ const Sell = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       <Sidenav />
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <h1>Sell</h1>
-        <form onSubmit={handleSubmit}>
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }} className='sell-main'>
+      <div style={{ textAlign: 'center' }}>
+      <h1>Sell</h1>
+    </div>
+        <form onSubmit={handleSubmit} className='sellform'>
           <div className="container">
             <div className="date">
               <label>Date:</label>

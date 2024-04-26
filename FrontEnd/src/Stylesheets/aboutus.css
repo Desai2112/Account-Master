@@ -1,5 +1,6 @@
 .app{
-  background-image: url('./bg.jpg');
+  /* background-image: url('./bg.jpg'); */
+  background-color: antiquewhite;
   background-size: cover;
   background-position: center;
   position: relative;

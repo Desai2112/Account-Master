@@ -1,11 +1,10 @@
 // Import necessary elements
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import Sidenav from '../Sidenav';
 import '../Stylesheets/aboutus.css';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
-
 
 const Aboutus = () => {
   let message = "We're dedicated to pioneering innovative solutions that propel businesses and individuals forward in the ever-evolving digital landscape. With a passionate team committed to excellence, we're here to transform your ideas into reality, harnessing the power of technology to drive growth and success. Join us on this journey of innovation and discovery.";

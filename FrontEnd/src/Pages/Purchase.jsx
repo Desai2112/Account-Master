@@ -156,9 +156,11 @@ const Purchase = () => {
   return (
     <Box sx={{ display: 'flex' }}>
       <Sidenav />
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <h1>Purchase</h1>
-        <form onSubmit={handleSubmit}>
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }} className='purchase-main'>
+      <div style={{ textAlign: 'center' }}>
+      <h1>Purchase</h1>
+    </div>
+        <form onSubmit={handleSubmit} className='purchaseform'>
           <div className="container">
             <div className="date">
               <label>Date:</label>

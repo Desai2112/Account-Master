@@ -79,6 +79,8 @@ const verifyJWT = (req, res, next) => {
         });
     }
 };
+
+
 app.get('/checkAuth', verifyJWT, (req, res) => {
     // If this middleware runs, it means the user is authenticated
     return res.json({ authenticated: true, userId: req.userId });

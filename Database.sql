@@ -47,17 +47,54 @@ create table details(
 select * from details;
 SET SQL_SAFE_UPDATES = 0;
 
-truncate table purchase;
+truncate table sell;
 
 SELECT * FROM Purchase;
 
 insert into monthlysummary(MonthYear,MonthlySell,MonthlyPurchase,Tax,NetProfit) 
 values("January",10000,8500,1100,400);
 
+-- Update MonthlySummary table with monthly totals from Sell table
+INSERT INTO MonthlySummary (UId, MonthYear, MonthlySell)
 SELECT 
-    *
-FROM
-    monthlysummary;
+    UId,
+    DATE_FORMAT(TransactionDate, '%Y-%m') AS MonthYear,
+    SUM(AmountWithoutTax) AS MonthlySell
+FROM Sell
+GROUP BY UId, DATE_FORMAT(TransactionDate, '%Y-%m')
+ON DUPLICATE KEY UPDATE MonthlySell = monthly_summary_alias.MonthlySell;
 
-select * from sell where uid=3;
-truncate sell;
+-- Update MonthlySummary table with monthly totals from Purchase table
+UPDATE MonthlySummary MS
+INNER JOIN (
+    SELECT 
+        UId,
+        DATE_FORMAT(TransactionDate, '%Y-%m') AS MonthYear,
+        SUM(AmountWithoutTax) AS MonthlyPurchase
+    FROM Purchase
+    GROUP BY UId, DATE_FORMAT(TransactionDate, '%Y-%m')
+) P ON MS.UId = P.UId AND MS.MonthYear = P.MonthYear
+SET MS.MonthlyPurchase = P.MonthlyPurchase
+WHERE MS.UId = P.UId AND MS.MonthYear = P.MonthYear;
+
+-- Update MonthlySummary table with tax and net profit
+UPDATE MonthlySummary MS
+INNER JOIN (
+    SELECT 
+        UId,
+        DATE_FORMAT(TransactionDate, '%Y-%m') AS MonthYear,
+        SUM(GST) AS TotalSellTax
+    FROM Sell
+    GROUP BY UId, DATE_FORMAT(TransactionDate, '%Y-%m')
+) ST ON MS.UId = ST.UId AND MS.MonthYear = ST.MonthYear
+INNER JOIN (
+    SELECT 
+        UId,
+        DATE_FORMAT(TransactionDate, '%Y-%m') AS MonthYear,
+        SUM(GST) AS TotalPurchaseTax
+    FROM Purchase
+    GROUP BY UId, DATE_FORMAT(TransactionDate, '%Y-%m')
+) PT ON MS.UId = PT.UId AND MS.MonthYear = PT.MonthYear
+SET MS.Tax = ST.TotalSellTax - PT.TotalPurchaseTax,
+    MS.NetProfit = MS.MonthlySell - MS.MonthlyPurchase - (ST.TotalSellTax - PT.TotalPurchaseTax);
+
