@@ -18,7 +18,8 @@ const Signup = () => {
                 console.log(res);
                 if (res.data.success) {
                     console.log(res.data.message);
-                    navigate('/home');
+                    navigate('/');
+                    alert("Sign up successfull please login to see your details.");
                 } else {
                     alert("Signup failed: " + res.data.message);
                 }

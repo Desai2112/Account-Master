@@ -6,7 +6,7 @@ const Graph = ({ data }) => {
   return (
     <Card>
       <CardContent>
-        <Typography variant="h6">Sales, Purchases, and Profit Trend</Typography>
+        <Typography variant="h6">Purchases, Sales, and Profit Trend</Typography>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -14,8 +14,8 @@ const Graph = ({ data }) => {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="sales" fill="#8884d8" name="Sales" />
             <Bar dataKey="purchases" fill="#82ca9d" name="Purchases" />
+            <Bar dataKey="sales" fill="#8884d8" name="Sales" />
             <Bar dataKey="profit" fill="#ffc658" name="Profit" />
           </BarChart>
         </ResponsiveContainer>

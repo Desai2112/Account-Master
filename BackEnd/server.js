@@ -153,3 +153,27 @@ app.post('/analytics', verifyJWT, (req, res) => {
         }
     });
 });
+
+// DashBoard Graph Data
+app.post('/dashboard-graph', verifyJWT, (req, res) => {
+    const userId = req.userId; // Extract userId from the JWT token
+
+    const query = 'SELECT MonthYear, MonthlySell, MonthlyPurchase, NetProfit FROM MonthlySummary WHERE UId = ?';
+    db.query(query, [userId], (err, result) => {
+        if (err) {
+            console.error('Error fetching MonthlySummary data:', err);
+            res.status(500).json({ error: 'Error fetching MonthlySummary data' });
+        } else {
+            // Format the data as needed
+            const formattedData = result.map(row => ({
+                month: row.MonthYear, // Assuming MonthYear is in 'Jan-2024' format
+                sales: row.MonthlySell,
+                purchases: row.MonthlyPurchase,
+                profit: row.NetProfit
+            }));
+            console.log("Graph data fetched successfully");
+            console.log(formattedData);
+            res.status(200).json(formattedData);
+        }
+    });
+});
