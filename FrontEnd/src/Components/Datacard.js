@@ -1,15 +1,13 @@
 import React from 'react';
-import { Card, CardContent, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
-const DataCard = ({ title, value }) => {
+const Datacard = ({ title, value }) => {
   return (
-    <Card style={{ marginBottom: '20px', width: '30%', marginRight: '2%' }}>
-      <CardContent>
-        <Typography variant="h6">{title}</Typography>
-        <Typography variant="h4">{value}</Typography>
-      </CardContent>
-    </Card>
+    <Box className="datacard">
+      <Typography variant="h6">{title}</Typography>
+      <Typography variant="body1">{value}</Typography>
+    </Box>
   );
-}
+};
 
-export default DataCard;
+export default Datacard;

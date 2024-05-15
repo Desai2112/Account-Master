@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box } from '@mui/material';
 import Sidenav from '../Sidenav';
 import axios from 'axios';
+import '../Stylesheets/Analytics.css'
 
 const Analytics = () => {
   const [analyticsData, setAnalyticsData] = useState([]);
@@ -62,7 +63,8 @@ const Analytics = () => {
   }, []);
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <div className="analytics-main">
+    <Box sx={{ display: 'flex' } }>
       <Sidenav />
       <div className="container">
         <div className="row">
@@ -99,6 +101,7 @@ const Analytics = () => {
         </div>
       </div>
     </Box>
+    </div>
   );
 };
 

@@ -65,9 +65,7 @@ CREATE TRIGGER before_insert_sell
 BEFORE INSERT ON Sell
 FOR EACH ROW
 BEGIN
-    -- Calculate the amount without tax based on quantity and price per unit
     SET NEW.AmountWithoutTax = NEW.Quantity * NEW.PricePerUnit;
-    -- Calculate the GST based on the net amount and amount without tax
     SET NEW.GST = NEW.NetAmount - NEW.AmountWithoutTax;
 END$$
 
@@ -192,4 +190,26 @@ END$$
 
 DELIMITER ;
 
+select * from monthlysummary ;
 SELECT MonthYear, MonthlySell, MonthlyPurchase, NetProfit FROM MonthlySummary WHERE UId = 2;
+SELECT *
+FROM MonthlySummary
+WHERE MONTH(MonthYear) = MONTH(sysdate())
+and year(MonthYear)=year(sysdate());
+
+select month(monthyear) from monthlysummary;
+select * from monthlysummary;
+SELECT *
+FROM MonthlySummary
+WHERE MonthYear = CONCAT(YEAR(CURRENT_DATE), '-', LPAD(MONTH(CURRENT_DATE), 2, '0'));
+SELECT * FROM MonthlySummary 
+        WHERE SUBSTRING(MonthYear, 1, 7) = DATE_FORMAT(DATE_SUB(CURRENT_DATE, INTERVAL 1 MONTH), '%Y-%m') 
+        AND uid = 1;
+        
+select * from monthlysummary;
+desc monthlysummary;
+DELETE FROM monthlysummary
+WHERE MonthYear = '2024-04';
+SET SQL_SAFE_UPDATES=0;
+
+

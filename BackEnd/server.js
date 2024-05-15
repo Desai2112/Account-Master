@@ -164,14 +164,65 @@ app.post('/dashboard-graph', verifyJWT, (req, res) => {
             console.error('Error fetching MonthlySummary data:', err);
             res.status(500).json({ error: 'Error fetching MonthlySummary data' });
         } else {
-            // Format the data as needed
             const formattedData = result.map(row => ({
-                month: row.MonthYear, // Assuming MonthYear is in 'Jan-2024' format
+                month: row.MonthYear, 
                 sales: row.MonthlySell,
                 purchases: row.MonthlyPurchase,
                 profit: row.NetProfit
             }));
             console.log("Graph data fetched successfully");
+            console.log(formattedData);
+            res.status(200).json(formattedData);
+        }
+    });
+});
+
+
+// Dashboard Datacard Data for This Month
+app.post('/datacard-this-month', verifyJWT, (req, res) => {
+    const userId = req.userId;
+    const thisMonthQuery = `
+        SELECT * FROM MonthlySummary 
+        WHERE MonthYear = CONCAT(YEAR(CURRENT_DATE), '-', LPAD(MONTH(CURRENT_DATE), 2, '0')) 
+        AND uid = ?;
+    `;
+    db.query(thisMonthQuery, [userId], (err, result) => {
+        if (err) {
+            console.error('Error fetching this month data:', err);
+            res.status(500).json({ error: 'Error fetching this month data' });
+        } else {
+            const formattedData = result.map(row => ({
+                sales: row.MonthlySell,
+                purchases: row.MonthlyPurchase,
+                profit: row.NetProfit
+            }));
+            console.log("This month data fetched successfully");
+            console.log(formattedData);
+            res.status(200).json(formattedData);
+        }
+    });
+});
+
+
+// Dashboard Datacard Data for Previous Month
+app.post('/datacard-previous-month', verifyJWT, (req, res) => {
+    const userId = req.userId;
+    const previousMonthQuery = `
+        SELECT * FROM MonthlySummary 
+        WHERE SUBSTRING(MonthYear, 1, 7) = DATE_FORMAT(DATE_SUB(CURRENT_DATE, INTERVAL 1 MONTH), '%Y-%m') 
+        AND uid = ?;
+    `;
+    db.query(previousMonthQuery, [userId], (err, result) => {
+        if (err) {
+            console.error('Error fetching previous month data:', err);
+            res.status(500).json({ error: 'Error fetching previous month data' });
+        } else {
+            const formattedData = result.map(row => ({
+                sales: row.MonthlySell,
+                purchases: row.MonthlyPurchase,
+                profit: row.NetProfit
+            }));
+            console.log("Previous month data fetched successfully");
             console.log(formattedData);
             res.status(200).json(formattedData);
         }

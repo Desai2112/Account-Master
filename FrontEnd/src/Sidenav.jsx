@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -21,7 +21,8 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import SellIcon from '@mui/icons-material/Sell';
 import AnalyticsOutlinedIcon from '@mui/icons-material/AnalyticsOutlined';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
-import { useNavigate } from 'react-router-dom';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -92,8 +93,21 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 export default function MiniDrawer({ UId }) {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    setOpen(false); // Close the drawer when navigating to another page
+  }, [location]);
+
+  const handleLogout = () => {
+    // Clear session data
+    localStorage.removeItem('accessToken'); // Example: Clearing access token from localStorage
+
+    // Redirect to the login page after logout
+    navigate('/');
+  };
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -204,6 +218,26 @@ export default function MiniDrawer({ UId }) {
                 <ContactPageIcon />
               </ListItemIcon>
               <ListItemText primary={'About Us'} sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding onClick={handleLogout}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? 'initial' : 'center',
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : 'auto',
+                  justifyContent: 'center',
+                }}
+              >
+                <ExitToAppIcon />
+              </ListItemIcon>
+              <ListItemText primary={'Logout'} sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
         </List>

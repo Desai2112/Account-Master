@@ -1,84 +1,77 @@
-/* dashboard.css
+/* dashboard.css */
 
-/* Ensure the main container takes up the full width of the viewport */
 .main-container {
     display: flex;
     background-color: antiquewhite;
 }
 
-/* Ensure the main content area takes up the full width */
+.dashboard-title {
+    justify-content: center;
+}
+
 .main-content {
     width: 100%;
     padding: 20px;
+    color: black;
 }
 
-/* Styles for the dashboard title */
 .dashboard-title {
     font-size: 1.5em;
-    /* Responsive font size */
 }
 
-/* Adjust grid layout for medium screens */
 @media (max-width: 1024px) {
     .datacard-container {
         grid-template-columns: repeat(2, 1fr);
-        /* Two columns on medium screens */
     }
 }
 
-/* Adjust grid layout for small screens */
 @media (max-width: 768px) {
     .datacard-container {
         grid-template-columns: 1fr;
-        /* One column on small screens */
     }
 }
 
-/* Styles for the graph container */
 .graph-container {
     margin-top: 20px;
 }
 
-/* Adjust layout for very small screens */
 @media only screen and (max-width: 768px) {
     .main-container {
         flex-direction: column;
     }
 
-    /* Ensure the side navigation takes up the full width */
     .sidenav {
         width: 100%;
     }
 
-    /* Adjust grid layout for small screens */
     .datacard-container {
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     }
 
-    /* Center align the dashboard title */
     .dashboard-title {
         text-align: center;
     }
 }
 
-/* Stack cards vertically on very small screens */
 @media only screen and (max-width: 480px) {
     .datacard-container {
         grid-template-columns: 1fr;
     }
 }
 
-/* Styles for the data card container */
 .datacard-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    /* Adjusted to 1fr for equal width columns */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
     gap: 20px;
     padding: 20px;
+    margin: 0 auto;
+    max-width: 1200px;
 }
 
-/* Styles for the individual data card */
 .datacard {
+    width: calc(33.33% - 20px);
+    box-sizing: border-box;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     overflow: hidden;
@@ -87,34 +80,4 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-}
-
-/* Adjust grid layout for larger screens */
-@media (max-width: 1440px) {
-    .datacard-container {
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    }
-}
-
-.main-container {
-    display: flex;
-    background-color: antiquewhite;
-}
-
-.main-content {
-    flex-grow: 1;
-    padding: 20px;
-    color: black;
-}
-
-.dashboard-title {
-    font-size: 24px;
-    margin-bottom: 20px;
-    text-align: center;
-    font-family: 'Times New Roman', Times, serif
-}
-
-.datacard-container {
-    display: flex;
-    flex-wrap: wrap;
 }
